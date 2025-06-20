@@ -3,13 +3,165 @@ import knex from "../database_client.js";
 
 const mealsRouter = express.Router();
 
-//get all meals
+//get meals
 mealsRouter.get("/", async (req, res) => {
+  const {
+    maxPrice,
+    availableReservations,
+    title,
+    dateAfter,
+    dateBefore,
+    limit,
+    sortKey,
+    sortDir,
+  } = req.query;
+
+  const validators = {
+    maxPrice: {
+      validate: (val) => !isNaN(parseFloat(val)) && parseFloat(val) >= 0,
+      transform: (val) => parseFloat(val),
+      errorMsg: "Invalid value for maxPrice",
+    },
+    availableReservations: {
+      validate: (val) => val === "true" || val === "false",
+      errorMsg: "availableReservations must be 'true' or 'false'",
+    },
+    title: {
+      validate: (val) => typeof val === "string" && val.trim().length > 0,
+      errorMsg: "Invalid title",
+    },
+    dateAfter: {
+      validate: (val) => !isNaN(new Date(val).getTime()),
+      transform: (val) => new Date(val),
+      errorMsg: "Invalid dateAfter value",
+    },
+    dateBefore: {
+      validate: (val) => !isNaN(new Date(val).getTime()),
+      transform: (val) => new Date(val),
+      errorMsg: "Invalid dateBefore value",
+    },
+    limit: {
+      validate: (val) => Number.isInteger(Number(val)) && Number(val) > 0,
+      transform: (val) => parseInt(val, 10),
+      errorMsg: "Invalid limit value",
+    },
+    sortKey: {
+      validate: (val) =>
+        ["when_date", "max_reservations", "price"].includes(val),
+      errorMsg:
+        "Invalid sortKey. Valid keys: when_date, max_reservations, price",
+    },
+    sortDir: {
+      validate: (val) => val === "asc" || val === "desc",
+      errorMsg: "Invalid sortDir. Valid values: asc, desc",
+    },
+  };
+
+  // validate param or return error response
+  const validateParam = (key, value) => {
+    const validator = validators[key];
+    if (!validator) return { valid: true, value };
+    if (!validator.validate(value)) {
+      res.status(400).json({ error: validator.errorMsg });
+      return { valid: false };
+    }
+    return {
+      valid: true,
+      value: validator.transform ? validator.transform(value) : value,
+    };
+  };
+
   try {
-    const result = await knex("Meal").select("*").orderBy("id");
-    res.json(result);
-  } catch {
-    res.status(500).json({ error: "Failed to get all meals" });
+    const query = knex("Meal");
+
+    // maxPrice
+    if (maxPrice !== undefined) {
+      const { valid, value } = validateParam("maxPrice", maxPrice);
+      if (!valid) return;
+      query.where("price", "<", value);
+    }
+
+    // availableReservations
+    if (availableReservations !== undefined) {
+      const { valid, value } = validateParam(
+        "availableReservations",
+        availableReservations
+      );
+      if (!valid) return;
+
+      if (value === "true") {
+        query.whereRaw(`
+          (
+            SELECT COUNT(*) FROM Reservation
+            WHERE Reservation.meal_id = Meal.id
+          ) < Meal.max_reservations
+        `);
+      } else {
+        query.whereRaw(`
+          (
+            SELECT COUNT(*) FROM Reservation
+            WHERE Reservation.meal_id = Meal.id
+          ) >= Meal.max_reservations
+        `);
+      }
+    }
+
+    // title
+    if (title !== undefined) {
+      const { valid, value } = validateParam("title", title);
+      if (!valid) return;
+      query.where("title", "like", `%${value}%`);
+    }
+
+    // dateAfter
+    if (dateAfter !== undefined) {
+      const { valid, value } = validateParam("dateAfter", dateAfter);
+      if (!valid) return;
+      query.where("when_date", ">", value);
+    }
+
+    // dateBefore
+    if (dateBefore !== undefined) {
+      const { valid, value } = validateParam("dateBefore", dateBefore);
+      if (!valid) return;
+      query.where("when_date", "<", value);
+    }
+
+    // limit
+    if (limit !== undefined) {
+      const { valid, value } = validateParam("limit", limit);
+      if (!valid) return;
+      query.limit(value);
+    }
+
+    // sortKey and sortDir
+    if (sortKey !== undefined) {
+      const { valid: validKey, value: keyVal } = validateParam(
+        "sortKey",
+        sortKey
+      );
+      if (!validKey) return;
+
+      let direction = "asc";
+      if (sortDir !== undefined) {
+        const { valid: validDir, value: dirVal } = validateParam(
+          "sortDir",
+          sortDir
+        );
+        if (!validDir) return;
+        direction = dirVal;
+      }
+
+      query.orderBy(keyVal, direction);
+    } else {
+      query.orderBy("id");
+    }
+
+    const meals = await query.select("*");
+    res.json(meals);
+  } catch (err) {
+    console.error("Error fetching meals:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
