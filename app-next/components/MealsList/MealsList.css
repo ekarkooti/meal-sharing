@@ -1,0 +1,82 @@
+/* frontend/components/MealsList/MealsList.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+.meals-list-page {
+    padding: 1rem;
+    background-color: #f9fafb;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+}
+
+@media (min-width: 640px) {
+    .meals-list-page {
+        padding: 2rem;
+    }
+}
+
+.meals-list-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    text-align: center;
+    color: #111827;
+    margin-bottom: 2.5rem;
+    margin-top: 1.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.meals-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2rem;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 640px) {
+    .meals-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 768px) {
+    .meals-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .meals-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .meals-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.loading-message,
+.error-message,
+.no-meals-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.25rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.loading-message {
+    color: #4b5563;
+}
+
+.error-message {
+    color: #dc2626;
+}
+
+.no-meals-message {
+    color: #4b5563;
+}
