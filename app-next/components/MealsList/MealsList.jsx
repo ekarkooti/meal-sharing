@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Meal } from '../Meal/Meal';
+import './MealsList.css'; 
 
 export const MealsList = () => {
   const [meals, setMeals] = useState([]);
@@ -23,32 +25,40 @@ export const MealsList = () => {
     };
 
     fetchMeals();
-  }, []); 
+  }, []);
 
   if (loading) {
-    return <p>Loading meals...</p>;
+    return (
+      <div className="loading-message">
+        <p>Loading meals...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <p style={{ color: 'red' }}>Error fetching meals: {error}</p>;
+    return (
+      <div className="error-message">
+        <p>Error fetching meals: {error}</p>
+      </div>
+    );
   }
 
   if (meals.length === 0) {
-    return <p>No meals available!</p>;
+    return (
+      <div className="no-meals-message">
+        <p>No meals available yet. Check back soon!</p>
+      </div>
+    );
   }
 
   return (
-    <div className="meals-list-container">
-      <h2>Available Meals</h2>
-      {meals.map((meal) => (
-        <div key={meal.id} className="meal-item" style={{ border: '1px solid #ccc', padding: '10px', margin: '10px', borderRadius: '5px' }}>
-          <h3>{meal.title}</h3>
-          <p>Description: {meal.description}</p>
-          <p>Price: DKK {meal.price}</p>
-          <p>Max Reservations: {meal.max_reservations}</p> 
-          <p>Location: {meal.location}</p>
-        </div>
-      ))}
+    <div className="meals-list-page">
+      <h2 className="meals-list-title">Available Meals</h2>
+      <div className="meals-grid">
+        {meals.map((meal) => (
+          <Meal key={meal.id} meal={meal} />
+        ))}
+      </div>
     </div>
   );
 };
