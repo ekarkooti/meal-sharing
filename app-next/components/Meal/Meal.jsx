@@ -1,29 +1,27 @@
 import React from 'react';
 import './Meal.css';
+import Image from 'next/image'; 
 
 export const Meal = ({ meal }) => {
   const { title, description, price, picture_url, servings, cuisine } = meal;
+  const defaultImageSrc = 'https://placehold.co/400x250/E0E0E0/333333?text=No+Image';
+  const imageWidth = 400; 
+  const imageHeight = 250;
 
-  const handleError = (e) => {
-    e.target.src = 'https://placehold.co/400x250/E0E0E0/333333?text=No+Image';
-    e.target.alt = 'Image not available';
-  };
 
   return (
     <div className="meal-card">
       {picture_url && (
-        <img
-          src={picture_url}
-          alt={title}
+        <Image
+        src={picture_url || defaultImageSrc}
+        alt={title || 'Meal image'}
           className="meal-image"
-          onError={handleError}
+          width={imageWidth}
+          height={imageHeight}
+          layout="responsive"
         />
       )}
-      {!picture_url && (
-        <div className="meal-image-placeholder">
-          No Image Available
-        </div>
-      )}
+     
 
       <div className="meal-content">
         <div>
