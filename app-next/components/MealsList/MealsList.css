@@ -1,11 +1,9 @@
-/* frontend/components/MealsList/MealsList.css */
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
 .meals-list-page {
     padding: 1rem;
     background-color: #f9fafb;
-    min-height: 100vh;
+    min-height: auto;
     font-family: 'Inter', sans-serif;
 }
 
@@ -64,7 +62,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    padding: 5rem 1rem;
+    min-height: 200px;
     font-size: 1.25rem;
     font-family: 'Inter', sans-serif;
 }

@@ -1,15 +1,17 @@
 import React from 'react';
 import './Meal.css';
 import Image from 'next/image'; 
+import Link from 'next/link'; 
 
 export const Meal = ({ meal }) => {
-  const { title, description, price, picture_url, servings, cuisine } = meal;
+  const { id,title, description, price, picture_url, servings, cuisine } = meal;
   const defaultImageSrc = 'https://placehold.co/400x250/E0E0E0/333333?text=No+Image';
   const imageWidth = 400; 
   const imageHeight = 250;
 
 
   return (
+    <Link href={`/meals/${id}`} className="meal-card-link">
     <div className="meal-card">
       {picture_url && (
         <Image
@@ -35,6 +37,7 @@ export const Meal = ({ meal }) => {
         </div>
       </div>
     </div>
+    </Link>
   );
 };
 
