@@ -3,7 +3,7 @@ import knex from "../database_client.js";
 
 const reviewsRouter = express.Router();
 
-//get all meals
+//get all reviews
 reviewsRouter.get("/", async (req, res) => {
   try {
     const result = await knex("review").select("*").orderBy("id");

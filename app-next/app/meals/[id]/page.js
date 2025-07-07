@@ -24,12 +24,17 @@ export async function generateStaticParams() {
     const data = await response.json();
     meals = data.meals || data;
   } catch (error) {
+    console.error("Error fetching meals for static params:", error);
     return [];
   }
 
-  const params = meals.map((meal) => ({
-    id: meal.id.toString(),
-  }));
+  const params = meals
+    .filter(
+      (meal) => meal && typeof meal.id !== "undefined" && meal.id !== null
+    ) // Filter out invalid meals
+    .map((meal) => ({
+      id: String(meal.id),
+    }));
   return params;
 }
 
@@ -41,7 +46,9 @@ async function getMealDetails(id) {
     });
 
     if (!response.ok) {
-      return null;
+      const errorMsg = `Failed to fetch meal details for ID ${id}. Status: ${response.status} ${response.statusText}`;
+      console.error(errorMsg, response);
+      throw new Error(errorMsg);
     }
     const data = await response.json();
 
