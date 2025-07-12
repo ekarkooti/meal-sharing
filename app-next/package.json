@@ -12,6 +12,7 @@
     "hyf-template-app": "file:",
     "next": "14.2.11",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-icons": "^5.5.0"
   }
 }
