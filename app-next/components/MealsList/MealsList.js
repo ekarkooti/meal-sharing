@@ -1,6 +1,6 @@
-// /components/MealsList/Mealslist.js
 "use client";
 import React, { useState, useEffect } from "react";
+import { useMealsQuery } from "@/Context/MealsQueryContext/MealsQueryContext";
 import { Meal } from "../Meal/Meal";
 import "./MealsList.css";
 
@@ -10,6 +10,7 @@ export const MealsList = ({ limit = null, enablePagination = false }) => {
   const [error, setError] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const { searchTerm, filter, sort } = useMealsQuery();
   let mealsToDisplay = [];
   let totalPages = 1;
   const mealsPerPage = limit || 9;
@@ -18,12 +19,25 @@ export const MealsList = ({ limit = null, enablePagination = false }) => {
     const fetchAllMeals = async () => {
       setLoading(true);
       setError(null);
+
       try {
-        const response = await fetch("http://localhost:3001/api/meals");
+        const url = new URL("http://localhost:3001/api/meals");
+
+        if (searchTerm) url.searchParams.append("title", searchTerm);
+        if (filter) url.searchParams.append("availableReservations", filter);
+
+        if (sort) {
+          const [key, dir] = sort.split("-");
+          url.searchParams.append("sortKey", key);
+          url.searchParams.append("sortDir", dir);
+        }
+
+        const response = await fetch(url);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const data = await response.json();
         setAllMealsData(data.meals || data);
       } catch (err) {
@@ -34,7 +48,7 @@ export const MealsList = ({ limit = null, enablePagination = false }) => {
     };
 
     fetchAllMeals();
-  }, []);
+  }, [searchTerm, filter, sort]);
 
   if (!loading && !error && allMealsData.length > 0) {
     if (enablePagination) {
@@ -96,14 +110,12 @@ export const MealsList = ({ limit = null, enablePagination = false }) => {
 
   return (
     <div className="meals-list-page">
-      {/* <h4 className="meals-list-title">Available Meals</h4> */}
       <div className="meals-grid">
         {mealsToDisplay.map((meal) => (
           <Meal key={meal.id} meal={meal} />
         ))}
       </div>
 
-      {/* Pagination Controls, only shown if pagination is enabled and there's more than 1 page */}
       {enablePagination && totalPages > 1 && (
         <div className="pagination-controls">
           <button onClick={goToPrevPage} disabled={currentPage === 1}>

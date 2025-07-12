@@ -1,4 +1,3 @@
-// /components/HomePage/HomePage.js
 "use client";
 import Link from "next/link";
 import "./HomePage.css";

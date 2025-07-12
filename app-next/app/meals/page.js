@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React from "react";
 
-import { MealsList } from "/components/MealsList/MealsList";
+import { MealsList } from "@/components/MealsList/MealsList";
 
 export const AllMeals = () => {
   return (
