@@ -1,23 +1,45 @@
 .app-header {
-    background-color: #4CAF50;
+    background-color: #2A5B0F;
     color: white;
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.5rem;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
 }
 
-.app-welcome-message {
-    margin-bottom: 1rem;
+.app-left-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
-.app-welcome-message h1 {
-    font-size: 2.2rem;
-    font-weight: bold;
-    color: white;
-    margin: 0;
+.app-logo {
+    display: block;
+}
+
+.app-search-box input {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: white;
+    color: #333;
+}
+
+.app-filter-dropdown select,
+.app-sort-dropdown select {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: white;
+    color: #333;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2C197.3L159.2%2C69.5c-4-4-9.3-6.2-14.7-6.2c-5.4%2C0-10.7%2C2.2-14.7%2C6.2L5.4%2C197.3c-8%2C8-8%2C20.9%2C0%2C28.9c8%2C8%2C20.9%2C8%2C28.9%2C0l114.7-114.7l114.7%2C114.7c8%2C8%2C20.9%2C8%2C28.9%2C0C295%2C218.2%2C295%2C205.3%2C287%2C197.3z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 0.7em top 50%, 0 0;
+    background-size: 0.65em auto, 100%;
 }
 
 .app-nav ul {
@@ -31,7 +53,7 @@
 .app-nav li a.app-nav-link {
     color: white;
     text-decoration: none;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-weight: 500;
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -42,19 +64,47 @@
     background-color: #6d9e6e;
 }
 
+.app-nav-link.app-fav-icon {
+    font-size: 1.6rem;
+    padding: 0.5rem;
+}
+
+
 @media (max-width: 768px) {
     .app-header {
+        flex-direction: column;
         padding: 1rem;
+        gap: 1rem;
     }
 
-    .app-welcome-message h1 {
-        font-size: 1.8rem;
+    .app-left-section {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    .app-logo {
+        margin-bottom: 0.5rem;
+    }
+
+    .app-search-box,
+    .app-filter-dropdown,
+    .app-sort-dropdown {
+        width: 100%;
+    }
+
+    .app-search-box input,
+    .app-filter-dropdown select,
+    .app-sort-dropdown select {
+        width: 100%;
     }
 
     .app-nav ul {
         flex-direction: column;
         gap: 0.8rem;
         width: 100%;
+        text-align: center;
     }
 
     .app-nav li {
