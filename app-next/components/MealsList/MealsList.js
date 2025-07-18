@@ -6,14 +6,6 @@ import "./MealsList.css";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-if (!API_BASE_URL) {
-  setError(
-    "API base URL is not configured. Please set NEXT_PUBLIC_API_URL environment variable."
-  );
-  setLoading(false);
-  return;
-}
-
 export const MealsList = ({ limit = null, enablePagination = false }) => {
   const [allMealsData, setAllMealsData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,6 +19,14 @@ export const MealsList = ({ limit = null, enablePagination = false }) => {
 
   useEffect(() => {
     const fetchAllMeals = async () => {
+      // if (!API_BASE_URL) {
+      //   setError(
+      //     "API base URL is not configured. Please set NEXT_PUBLIC_API_URL environment variable."
+      //   );
+      //   setLoading(false);
+      //   return;
+      // }
+
       setLoading(true);
       setError(null);
 
@@ -64,12 +64,6 @@ export const MealsList = ({ limit = null, enablePagination = false }) => {
     if (enablePagination) {
       totalPages = Math.ceil(allMealsData.length / mealsPerPage);
 
-      if (currentPage > totalPages && totalPages > 0) {
-        setCurrentPage(totalPages);
-      } else if (currentPage === 0 && totalPages > 0) {
-        setCurrentPage(1);
-      }
-
       const startIndex = (currentPage - 1) * mealsPerPage;
       const endIndex = startIndex + mealsPerPage;
       mealsToDisplay = allMealsData.slice(startIndex, endIndex);
@@ -81,6 +75,25 @@ export const MealsList = ({ limit = null, enablePagination = false }) => {
       totalPages = 1;
     }
   }
+
+  // Move setCurrentPage outside of render
+  useEffect(() => {
+    if (!loading && !error && enablePagination && allMealsData.length > 0) {
+      const total = Math.ceil(allMealsData.length / mealsPerPage);
+      if (currentPage > total && total > 0) {
+        setCurrentPage(total);
+      } else if (currentPage === 0 && total > 0) {
+        setCurrentPage(1);
+      }
+    }
+  }, [
+    loading,
+    error,
+    currentPage,
+    allMealsData,
+    enablePagination,
+    mealsPerPage,
+  ]);
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {

@@ -4,7 +4,7 @@ import { MealFormsWrapper } from "../../../components/MealFormsWrapper/MealForms
 import "./MealDetails.css";
 
 export async function generateStaticParams() {
-  const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+  const backendApiUrl = process.env.NEXT_PUBLIC_API_URL;
   let meals = [];
 
   try {
@@ -40,7 +40,7 @@ export async function generateStaticParams() {
 
 async function getMealDetails(id) {
   try {
-    const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+    const backendApiUrl = process.env.NEXT_PUBLIC_API_URL;
     const response = await fetch(`${backendApiUrl}/meals/${id}`, {
       cache: "no-store",
     });
@@ -63,7 +63,7 @@ async function getMealDetails(id) {
 
 async function getMealReservations(mealId) {
   try {
-    const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+    const backendApiUrl = process.env.NEXT_PUBLIC_API_URL;
     const response = await fetch(
       `${backendApiUrl}/meals/${mealId}/reservations`,
       {
