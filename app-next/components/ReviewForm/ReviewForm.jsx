@@ -23,7 +23,7 @@ export const ReviewForm = ({ mealId }) => {
     };
 
     try {
-      const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+      const backendApiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${backendApiUrl}/reviews`, {
         method: "POST",
         headers: {

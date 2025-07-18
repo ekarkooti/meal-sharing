@@ -70,7 +70,7 @@ mealsRouter.get("/", async (req, res) => {
   };
 
   try {
-    const query = knex("Meal");
+    const query = knex("meal");
 
     if (maxPrice !== undefined) {
       const { valid, value } = validateParam("maxPrice", maxPrice);
@@ -85,20 +85,14 @@ mealsRouter.get("/", async (req, res) => {
       );
       if (!valid) return;
 
+      const subquery = knex("Reservation")
+        .count("id")
+        .whereRaw("Reservation.meal_id = meal.id");
+
       if (value === "true") {
-        query.whereRaw(`
-          (
-            SELECT COUNT(*) FROM Reservation
-            WHERE Reservation.meal_id = Meal.id
-          ) < Meal.max_reservations
-        `);
+        query.whereRaw("(?) < ??", [subquery, "meal.max_reservations"]);
       } else {
-        query.whereRaw(`
-          (
-            SELECT COUNT(*) FROM Reservation
-            WHERE Reservation.meal_id = Meal.id
-          ) >= Meal.max_reservations
-        `);
+        query.whereRaw("(?) >= ??", [subquery, "meal.max_reservations"]);
       }
     }
 
@@ -148,7 +142,7 @@ mealsRouter.get("/", async (req, res) => {
       query.orderBy("id");
     }
 
-    const meals = await query.select("Meal.*");
+    const meals = await query.select("meal.*");
     res.json(meals);
   } catch (err) {
     console.error("Error fetching meals:", err);
@@ -196,7 +190,7 @@ mealsRouter.post("/", async (req, res) => {
   }
 
   try {
-    const [id] = await knex("Meal").insert(meal);
+    const [id] = await knex("meal").insert(meal);
     res.status(201).json({ message: "Meal added", id });
   } catch (err) {
     console.error(err);
@@ -207,8 +201,8 @@ mealsRouter.post("/", async (req, res) => {
 // GET meal by ID
 mealsRouter.get("/:id", async (req, res) => {
   try {
-    const meal = await knex("Meal")
-      .select("Meal.*")
+    const meal = await knex("meal")
+      .select("meal.*")
       .where({ id: req.params.id })
       .first();
     if (!meal) return res.status(404).json({ error: "Meal not found." });
@@ -261,7 +255,7 @@ mealsRouter.put("/:id", async (req, res) => {
   }
 
   try {
-    const count = await knex("Meal").where({ id: req.params.id }).update(meal);
+    const count = await knex("meal").where({ id: req.params.id }).update(meal);
     if (count === 0) return res.status(404).json({ error: "Meal not found." });
     res.json({ message: "Meal updated." });
   } catch (err) {
@@ -273,7 +267,7 @@ mealsRouter.put("/:id", async (req, res) => {
 // DELETE meal
 mealsRouter.delete("/:id", async (req, res) => {
   try {
-    const count = await knex("Meal").where({ id: req.params.id }).del();
+    const count = await knex("meal").where({ id: req.params.id }).del();
     if (count === 0) return res.status(404).json({ error: "Meal not found." });
     res.json({ message: "Meal deleted." });
   } catch (err) {

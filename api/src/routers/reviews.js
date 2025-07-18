@@ -54,7 +54,7 @@ reviewsRouter.post("/", async (req, res) => {
 //route to get review by id
 reviewsRouter.get("/:id", async (req, res) => {
   try {
-    const review = await knex("review").where({ id: req.params.id });
+    const review = await knex("review").where({ id: req.params.id }).first();
     if (!review) return res.status(404).json({ error: "Review not found." });
     res.json(review);
   } catch (err) {

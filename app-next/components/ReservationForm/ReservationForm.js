@@ -25,7 +25,7 @@ export const ReservationForm = ({ mealId, initialAvailableReservations }) => {
     };
 
     try {
-      const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+      const backendApiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${backendApiUrl}/reservations`, {
         method: "POST",
         headers: {

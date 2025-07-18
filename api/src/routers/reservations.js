@@ -6,7 +6,7 @@ const reservationsRouter = express.Router();
 //get all reservations
 reservationsRouter.get("/", async (req, res) => {
   try {
-    const reservations = await knex("Reservation").select("*").orderBy("id");
+    const reservations = await knex("reservation").select("*").orderBy("id");
     res.json(reservations);
   } catch (err) {
     console.error(err);
@@ -45,7 +45,7 @@ reservationsRouter.post("/", async (req, res) => {
   }
 
   try {
-    const [id] = await knex("Reservation").insert(reservation);
+    const [id] = await knex("reservation").insert(reservation);
     res.status(201).json({ message: "Reservation added", id });
   } catch (err) {
     console.error(err);
@@ -56,7 +56,9 @@ reservationsRouter.post("/", async (req, res) => {
 //get reservation by id
 reservationsRouter.get("/:id", async (req, res) => {
   try {
-    const reservation = await knex("Reservation").where({ id: req.params.id });
+    const reservation = await knex("reservation")
+      .where({ id: req.params.id })
+      .first();
     if (!reservation)
       return res.status(404).json({ error: "Reservation not found." });
     res.json(reservation);
@@ -96,7 +98,7 @@ reservationsRouter.put("/:id", async (req, res) => {
     return res.status(400).json({ error: "Invalid email format." });
   }
   try {
-    const count = await knex("Reservation")
+    const count = await knex("reservation")
       .where({ id: req.params.id })
       .update(reservation);
     if (count === 0)
@@ -111,7 +113,7 @@ reservationsRouter.put("/:id", async (req, res) => {
 //delete reservation
 reservationsRouter.delete("/:id", async (req, res) => {
   try {
-    const count = await knex("Reservation").where({ id: req.params.id }).del();
+    const count = await knex("reservation").where({ id: req.params.id }).del();
     if (count === 0)
       return res.status(404).json({ error: "Reservation not found." });
     res.json({ message: "Reservation deleted." });
