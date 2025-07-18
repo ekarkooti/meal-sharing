@@ -4,6 +4,16 @@ import { useMealsQuery } from "@/Context/MealsQueryContext/MealsQueryContext";
 import { Meal } from "../MealCard/MealCard";
 import "./MealsList.css";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  setError(
+    "API base URL is not configured. Please set NEXT_PUBLIC_API_URL environment variable."
+  );
+  setLoading(false);
+  return;
+}
+
 export const MealsList = ({ limit = null, enablePagination = false }) => {
   const [allMealsData, setAllMealsData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +31,7 @@ export const MealsList = ({ limit = null, enablePagination = false }) => {
       setError(null);
 
       try {
-        const url = new URL("http://localhost:3001/api/meals");
+        const url = new URL(`${API_BASE_URL}/meals`);
 
         if (searchTerm) url.searchParams.append("title", searchTerm);
         if (filter) url.searchParams.append("availableReservations", filter);
