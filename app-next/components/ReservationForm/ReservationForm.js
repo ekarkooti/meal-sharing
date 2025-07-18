@@ -17,7 +17,7 @@ export const ReservationForm = ({ mealId, initialAvailableReservations }) => {
 
     const reservationData = {
       number_of_guests: parseInt(numberOfGuests, 10),
-      meal_id: mealId,
+      meal_id: parseInt(mealId, 10),
       contact_name: contactName,
       contact_email: contactEmail,
       contact_phone_number: contactPhoneNumber,

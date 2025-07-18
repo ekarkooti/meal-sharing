@@ -13,17 +13,16 @@ app.use(bodyParser.json());
 
 const apiRouter = express.Router();
 
-// You can delete this route once you add your own routes
 apiRouter.get("/", async (req, res) => {
   const SHOW_TABLES_QUERY =
     process.env.DB_CLIENT === "pg"
       ? "SELECT * FROM pg_catalog.pg_tables;"
       : "SHOW TABLES;";
-  const tables = await knex.raw(SHOW_TABLES_QUERY);
+  const result = await knex.raw(SHOW_TABLES_QUERY);
+  const tables = process.env.DB_CLIENT === "pg" ? result.rows : result[0];
   res.json({ tables });
 });
 
-// This nested router example can also be replaced with your own sub-router
 apiRouter.use("/meals", mealsRouter);
 apiRouter.use("/reservations", reservationsRouter);
 apiRouter.use("/reviews", reviewsRouter);
@@ -33,14 +32,11 @@ app.listen(process.env.PORT, () => {
   console.log(`API listening on port ${process.env.PORT}`);
 });
 
-//My routes
 // Future meals
 apiRouter.get("/future-meals", async (req, res) => {
   try {
-    const result = await knex.raw(
-      "SELECT * FROM Meal WHERE `when_date` > NOW()"
-    );
-    res.json(result[0]);
+    const result = await knex("meal").where("when_date", ">", knex.fn.now());
+    res.json(result);
   } catch {
     res.status(500).json({ error: "Failed to get future meals" });
   }
@@ -49,10 +45,8 @@ apiRouter.get("/future-meals", async (req, res) => {
 // Past meals
 apiRouter.get("/past-meals", async (req, res) => {
   try {
-    const result = await knex.raw(
-      "SELECT * FROM Meal WHERE `when_date` < NOW()"
-    );
-    res.json(result[0]);
+    const result = await knex("meal").where("when_date", "<", knex.fn.now());
+    res.json(result);
   } catch {
     res.status(500).json({ error: "Failed to get past meals" });
   }
@@ -61,8 +55,8 @@ apiRouter.get("/past-meals", async (req, res) => {
 // All meals
 apiRouter.get("/all-meals", async (req, res) => {
   try {
-    const result = await knex.raw("SELECT * FROM Meal ORDER BY id");
-    res.json(result[0]);
+    const result = await knex("meal").select("*").orderBy("id");
+    res.json(result);
   } catch {
     res.status(500).json({ error: "Failed to get all meals" });
   }
@@ -71,8 +65,8 @@ apiRouter.get("/all-meals", async (req, res) => {
 // First meal
 apiRouter.get("/first-meal", async (req, res) => {
   try {
-    const result = await knex.raw("SELECT * FROM Meal ORDER BY id ASC LIMIT 1");
-    const meal = result[0][0];
+    const result = await knex("meal").select("*").orderBy("id", "asc").limit(1);
+    const meal = result[0];
     if (meal) {
       res.json(meal);
     } else {
@@ -86,10 +80,11 @@ apiRouter.get("/first-meal", async (req, res) => {
 // Last meal
 apiRouter.get("/last-meal", async (req, res) => {
   try {
-    const result = await knex.raw(
-      "SELECT * FROM Meal ORDER BY id DESC LIMIT 1"
-    );
-    const meal = result[0][0];
+    const result = await knex("meal")
+      .select("*")
+      .orderBy("id", "desc")
+      .limit(1);
+    const meal = result[0];
     if (meal) {
       res.json(meal);
     } else {
