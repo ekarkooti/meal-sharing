@@ -23,6 +23,7 @@ const Header = () => {
             width={150}
             height={150}
             className="app-logo"
+            priority
           />
         </Link>
         <SearchBox onSearch={setSearchTerm} />
@@ -43,7 +44,7 @@ const Header = () => {
               Meals
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link href="/reservations" className="app-nav-link">
               Reservations
             </Link>
@@ -54,7 +55,7 @@ const Header = () => {
                 ❤️
               </span>
             </Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </header>

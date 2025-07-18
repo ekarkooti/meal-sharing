@@ -6,7 +6,6 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     font-family: sans-serif;
-    /* Simpler font */
     color: #333;
 }
 
@@ -22,7 +21,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: .5rem;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #eee;
@@ -31,15 +30,21 @@
 .meal-detail-image-container {
     position: relative;
     width: 100%;
-    max-width: 350px;
-    height: 220px;
+    max-width: 300px;
+    /* doubled from 350px */
+    height: 300px;
+    /* doubled from 220px */
     border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    /* center it */
 }
 
 .meal-detail-image {
     object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
 
 .meal-detail-info {
@@ -100,7 +105,6 @@
 
 .meal-detail-ingredients li {
     background-color: #e6ffe6;
-    /* Lighter green */
     color: #2e7d32;
     padding: 0.4rem 0.8rem;
     border-radius: 15px;
@@ -117,24 +121,24 @@
     text-decoration: underline;
 }
 
+/* Remove horizontal layout override on larger screens */
 @media (min-width: 768px) {
     .meal-detail-page {
         padding: 2rem;
     }
 
     .meal-detail-header {
-        flex-direction: row;
-        text-align: left;
-        align-items: flex-start;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
     }
 
     .meal-detail-image-container {
-        width: 200px;
-        height: 180px;
-        flex-shrink: 0;
+        max-width: 300px;
+        height: 300px;
     }
 
     .meal-detail-info {
-        text-align: left;
+        text-align: center;
     }
 }

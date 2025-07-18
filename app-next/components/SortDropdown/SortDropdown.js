@@ -7,10 +7,10 @@ export default function SortDropdown() {
   return (
     <select onChange={(e) => setSort(e.target.value)}>
       <option value="">Sort…</option>
-      <option value="when_date-desc">Date ↓</option>
-      <option value="when_date-asc">Date ↑</option>
-      <option value="price-asc">Price ↑</option>
-      <option value="price-desc">Price ↓</option>
+      <option value="when_date-asc">Date Asc</option>
+      <option value="when_date-desc">Date Des</option>
+      <option value="price-asc">Price Asc</option>
+      <option value="price-desc">Price Des</option>
     </select>
   );
 }

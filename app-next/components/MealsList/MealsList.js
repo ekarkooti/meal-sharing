@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useMealsQuery } from "@/Context/MealsQueryContext/MealsQueryContext";
-import { Meal } from "../Meal/Meal";
+import { Meal } from "../MealCard/MealCard";
 import "./MealsList.css";
 
 export const MealsList = ({ limit = null, enablePagination = false }) => {

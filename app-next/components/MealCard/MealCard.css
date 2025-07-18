@@ -1,7 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
+.meal-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.meal-card-link:hover,
+.meal-card-link:focus,
+.meal-card-link:visited {
+    text-decoration: none;
+    color: inherit;
+}
+
 .meal-card {
-    background-color: #FFFFFF;
+    background-color: #f6fff5;
+    /* very light green */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
         0 2px 4px -1px rgba(0, 0, 0, 0.06);
     border-radius: 0.75rem;
@@ -13,18 +26,19 @@
 }
 
 .meal-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 .meal-image {
     width: 100%;
-    height: 12rem;
+    height: 10rem;
+    /* reduced from 12rem */
     object-fit: cover;
 }
 
 .meal-image-placeholder {
     width: 100%;
-    height: 12rem;
+    height: 10rem;
     background-color: #e5e7eb;
     display: flex;
     align-items: center;
@@ -33,7 +47,8 @@
 }
 
 .meal-content {
-    padding: 1.5rem;
+    padding: 1rem;
+    /* reduced from 1.5rem */
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -41,27 +56,54 @@
 }
 
 .meal-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    /* reduced from 1.5rem */
     font-weight: 700;
     color: #1f2937;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
+    /* tighter spacing */
     font-family: 'Inter', sans-serif;
 }
 
 .meal-description {
     color: #4b5563;
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
+    /* reduced spacing */
     font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .meal-price {
     color: #374151;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
     font-family: 'Inter', sans-serif;
+    margin: 0;
 }
 
 .meal-detail {
     font-size: 0.875rem;
     font-family: 'Inter', sans-serif;
+    color: #374151;
+    margin: 0;
+}
+
+.meal-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    align-items: center;
+    margin-top: 0.5rem;
+    /* tighter spacing */
+}
+
+.meal-rating {
+    font-size: 0.95rem;
+    color: #f59e0b;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    margin: 0;
 }

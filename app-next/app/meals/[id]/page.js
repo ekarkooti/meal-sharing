@@ -82,7 +82,7 @@ async function getMealReservations(mealId) {
 }
 
 export default async function MealDetailsPage({ params }) {
-  const mealId = params.id;
+  const { id: mealId } = await params;
 
   const [meal, reservations] = await Promise.all([
     getMealDetails(mealId),
@@ -109,13 +109,12 @@ export default async function MealDetailsPage({ params }) {
       <header className="meal-detail-header">
         <div className="meal-detail-image-container">
           <Image
-            // --- START: Changed ---
-            src={meal.imageUrl} // Removed fallback placeholder
-            // --- END: Changed ---
+            src={meal.photo_address}
             alt={meal.title || meal.name || "Meal Image"}
             fill
             className="meal-detail-image"
             sizes="(max-width: 768px) 100vw, 50vw"
+            priority
           />
         </div>
         <div className="meal-detail-info">

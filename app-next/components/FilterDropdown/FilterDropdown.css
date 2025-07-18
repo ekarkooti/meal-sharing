@@ -1,0 +1,36 @@
+.filterDropdown {
+    max-width: 650px;
+    width: 100%;
+}
+
+.filterSelect {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 20px;
+    border: 2px solid #1f4d0d;
+    /* dark green border */
+    background-color: #f0f2f5;
+    color: #333;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.filterSelect:hover,
+.filterSelect:focus {
+    border-color: #2a5b0f;
+    outline: none;
+}
+
+.filterSelect option {
+    padding: 0.5rem;
+    background-color: white;
+    color: #333;
+}
+
+.filterSelect optgroup {
+    font-weight: bold;
+    color: #1f4d0d;
+    padding: 0.25rem 0;
+}

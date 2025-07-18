@@ -3,7 +3,6 @@ import knex from "../database_client.js";
 
 const mealsRouter = express.Router();
 
-//get meals
 mealsRouter.get("/", async (req, res) => {
   const {
     maxPrice,
@@ -57,7 +56,6 @@ mealsRouter.get("/", async (req, res) => {
     },
   };
 
-  // validate param or return error response
   const validateParam = (key, value) => {
     const validator = validators[key];
     if (!validator) return { valid: true, value };
@@ -74,14 +72,12 @@ mealsRouter.get("/", async (req, res) => {
   try {
     const query = knex("Meal");
 
-    // maxPrice
     if (maxPrice !== undefined) {
       const { valid, value } = validateParam("maxPrice", maxPrice);
       if (!valid) return;
       query.where("price", "<", value);
     }
 
-    // availableReservations
     if (availableReservations !== undefined) {
       const { valid, value } = validateParam(
         "availableReservations",
@@ -106,35 +102,30 @@ mealsRouter.get("/", async (req, res) => {
       }
     }
 
-    // title
     if (title !== undefined) {
       const { valid, value } = validateParam("title", title);
       if (!valid) return;
       query.where("title", "like", `%${value}%`);
     }
 
-    // dateAfter
     if (dateAfter !== undefined) {
       const { valid, value } = validateParam("dateAfter", dateAfter);
       if (!valid) return;
       query.where("when_date", ">", value);
     }
 
-    // dateBefore
     if (dateBefore !== undefined) {
       const { valid, value } = validateParam("dateBefore", dateBefore);
       if (!valid) return;
       query.where("when_date", "<", value);
     }
 
-    // limit
     if (limit !== undefined) {
       const { valid, value } = validateParam("limit", limit);
       if (!valid) return;
       query.limit(value);
     }
 
-    // sortKey and sortDir
     if (sortKey !== undefined) {
       const { valid: validKey, value: keyVal } = validateParam(
         "sortKey",
@@ -157,7 +148,7 @@ mealsRouter.get("/", async (req, res) => {
       query.orderBy("id");
     }
 
-    const meals = await query.select("*");
+    const meals = await query.select("Meal.*");
     res.json(meals);
   } catch (err) {
     console.error("Error fetching meals:", err);
@@ -165,7 +156,7 @@ mealsRouter.get("/", async (req, res) => {
   }
 });
 
-//route to add meal
+// POST new meal
 mealsRouter.post("/", async (req, res) => {
   const meal = {
     title: req.body.title,
@@ -175,11 +166,14 @@ mealsRouter.post("/", async (req, res) => {
     max_reservations: req.body.max_reservations,
     price: req.body.price,
     created_date: req.body.created_date,
+    photo_address: req.body.photo_address,
+    avg_rating: req.body.avg_rating,
   };
 
   if (Object.values(meal).some((value) => value == null)) {
     return res.status(400).json({ error: "All fields are required." });
   }
+
   if (
     typeof meal.title !== "string" ||
     typeof meal.description !== "string" ||
@@ -187,7 +181,9 @@ mealsRouter.post("/", async (req, res) => {
     typeof meal.when_date !== "string" ||
     typeof meal.max_reservations !== "number" ||
     typeof meal.price !== "number" ||
-    typeof meal.created_date !== "string"
+    typeof meal.created_date !== "string" ||
+    typeof meal.photo_address !== "string" ||
+    typeof meal.avg_rating !== "number"
   ) {
     return res.status(400).json({ error: "Invalid data types." });
   }
@@ -198,6 +194,7 @@ mealsRouter.post("/", async (req, res) => {
       .status(400)
       .json({ error: "Invalid date format. Use YYYY-MM-DD." });
   }
+
   try {
     const [id] = await knex("Meal").insert(meal);
     res.status(201).json({ message: "Meal added", id });
@@ -207,10 +204,13 @@ mealsRouter.post("/", async (req, res) => {
   }
 });
 
-//route to get meal by id
+// GET meal by ID
 mealsRouter.get("/:id", async (req, res) => {
   try {
-    const meal = await knex("Meal").where({ id: req.params.id });
+    const meal = await knex("Meal")
+      .select("Meal.*")
+      .where({ id: req.params.id })
+      .first();
     if (!meal) return res.status(404).json({ error: "Meal not found." });
     res.json(meal);
   } catch (err) {
@@ -219,7 +219,7 @@ mealsRouter.get("/:id", async (req, res) => {
   }
 });
 
-//update meal
+// PUT update meal
 mealsRouter.put("/:id", async (req, res) => {
   const meal = {
     title: req.body.title,
@@ -229,14 +229,16 @@ mealsRouter.put("/:id", async (req, res) => {
     max_reservations: req.body.max_reservations,
     price: req.body.price,
     created_date: req.body.created_date,
+    photo_address: req.body.photo_address,
+    avg_rating: req.body.avg_rating,
   };
 
-  const requiredFields = Object.values(meal);
-  if (requiredFields.some((value) => value == null)) {
+  if (Object.values(meal).some((value) => value == null)) {
     return res
       .status(400)
       .json({ error: "All fields are required for update." });
   }
+
   if (
     typeof meal.title !== "string" ||
     typeof meal.description !== "string" ||
@@ -244,7 +246,9 @@ mealsRouter.put("/:id", async (req, res) => {
     typeof meal.when_date !== "string" ||
     typeof meal.max_reservations !== "number" ||
     typeof meal.price !== "number" ||
-    typeof meal.created_date !== "string"
+    typeof meal.created_date !== "string" ||
+    typeof meal.photo_address !== "string" ||
+    typeof meal.avg_rating !== "number"
   ) {
     return res.status(400).json({ error: "Invalid data types." });
   }
@@ -255,6 +259,7 @@ mealsRouter.put("/:id", async (req, res) => {
       .status(400)
       .json({ error: "Invalid date format. Use YYYY-MM-DD." });
   }
+
   try {
     const count = await knex("Meal").where({ id: req.params.id }).update(meal);
     if (count === 0) return res.status(404).json({ error: "Meal not found." });
@@ -265,7 +270,7 @@ mealsRouter.put("/:id", async (req, res) => {
   }
 });
 
-//delete meal by id
+// DELETE meal
 mealsRouter.delete("/:id", async (req, res) => {
   try {
     const count = await knex("Meal").where({ id: req.params.id }).del();

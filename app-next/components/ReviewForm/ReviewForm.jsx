@@ -1,12 +1,12 @@
 // components/ReviewForm/ReviewForm.js
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import './ReviewForm.css';
+import React, { useState } from "react";
+import "./ReviewForm.css";
 
 export const ReviewForm = ({ mealId }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [stars, setStars] = useState(5);
   const [submitting, setSubmitting] = useState(false);
 
@@ -25,23 +25,24 @@ export const ReviewForm = ({ mealId }) => {
     try {
       const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
       const response = await fetch(`${backendApiUrl}/reviews`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(reviewData),
       });
 
       if (!response.ok) {
-        alert(`Error submitting review: ${response.status} ${response.statusText}`);
+        alert(
+          `Error submitting review: ${response.status} ${response.statusText}`
+        );
         return;
       }
 
-      alert('Review submitted successfully!');
-      setTitle('');
-      setDescription('');
+      alert("Review submitted successfully!");
+      setTitle("");
+      setDescription("");
       setStars(5);
-
     } catch (err) {
       alert(`Network error submitting review: ${err.message}`);
     } finally {
@@ -51,7 +52,6 @@ export const ReviewForm = ({ mealId }) => {
 
   return (
     <div className="review-form-container">
-      <h2>Leave a Review</h2>
       <form onSubmit={handleSubmit} className="review-form">
         <div className="form-group">
           <label htmlFor="reviewTitle">Title:</label>
@@ -81,15 +81,23 @@ export const ReviewForm = ({ mealId }) => {
             type="number"
             id="reviewStars"
             value={stars}
-            onChange={(e) => setStars(Math.max(1, Math.min(5, parseInt(e.target.value, 10) || 1)))}
+            onChange={(e) =>
+              setStars(
+                Math.max(1, Math.min(5, parseInt(e.target.value, 10) || 1))
+              )
+            }
             min="1"
             max="5"
             required
             disabled={submitting}
           />
         </div>
-        <button type="submit" disabled={submitting} className="submit-review-button">
-          {submitting ? 'Submitting...' : 'Submit Review'}
+        <button
+          type="submit"
+          disabled={submitting}
+          className="submit-review-button"
+        >
+          {submitting ? "Submitting..." : "Submit Review"}
         </button>
       </form>
     </div>
